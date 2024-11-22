@@ -45,24 +45,30 @@ posts = [
 ]
 
 
+posts_dict = {post['id']: post for post in posts}
+
+
 def index(request):
     context = {'posts': posts}
     template = 'blog/index.html'
     return render(request, template, context)
 
 
-def post_detail(request, id):
-    post = next((post for post in posts if post['id'] == id), None)
+def post_detail(request, post_id):
+    post = posts_dict.get(post_id)
     if post is None:
-        raise Http404("Публикация не найдена")
+        raise Http404(f"Публикация с id {post_id} не найдена")
     context = {'post': post}
     template = 'blog/detail.html'
     return render(request, template, context)
 
 
 def category_posts(request, category_slug):
-    posts_in_category = [post for post in posts
-                         if post['category'] == category_slug]
+    posts_in_category = [
+        post for post in posts if post['category'] == category_slug
+    ]
+    if not posts_in_category:
+        raise Http404(f"Публикаций в категории {category_slug} не найдено")
     context = {'category_slug': category_slug, 'posts': posts_in_category}
     template = 'blog/category.html'
     return render(request, template, context)
