@@ -61,7 +61,7 @@ def post_detail(request, id):
 
 
 def category_posts(request, category_slug):
-    posts_in_category = [post for post in posts 
+    posts_in_category = [post for post in posts
                          if post['category'] == category_slug]
     context = {'category_slug': category_slug, 'posts': posts_in_category}
     template = 'blog/category.html'
